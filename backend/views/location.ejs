@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+  <p>Click the button to get your coordinates.</p>
+  <button onclick="getLocation()">Try It</button>
+
+
+
+  <p id="demo"></p>
+
+  <script>
+    var x = document.getElementById("demo");
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+      x.innerHTML = "Latitude: " + position.coords.latitude +
+        "<br>Longitude: " + position.coords.longitude;
+      fetch('http://localhost:4000/api/v1/location ', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          latitude:  position.coords.latitude,
+          longitude: position.coords.longitude
+        }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => console.log(data));
+    }
+  </script>
+
+</body>
+
+</html>
